@@ -1,0 +1,6 @@
+T1 P1 D7.800000 Z+7.440000 ;comment 
+T2 P2 D5.000000 Z+38.589999 ;comment 
+T3 P3 Z+3.610001 ;2 Schneider 6mm 13x57 
+T4 P4 D30.000000 Z-3.260001 ;Planfräser 
+T5 P5 Z+5.350000 ;Gravierer 
+T6 P6 Z-3.110001 ;Radiusfräser 

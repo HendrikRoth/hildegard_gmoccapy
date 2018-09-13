@@ -1,0 +1,63 @@
+o<tool_measurement> sub
+
+<active_tool> = #5400
+
+o200 if [<active_tool> lt 1]
+    (debug, No choosen tool!)
+
+o200 else
+    ; save modal state
+    M70
+
+    ; setting basic settings for this routine
+    M9 ; turn off coolant
+    M5 ; turn off spindle
+    G21 ; millimeters
+    G30.1 ; save actual position [#5181 #5182 #5183]
+    G49 ; clear tool length compoensation
+    G90 ; absolute positioning
+    G94 ; feed rates in units/min
+    G40 ; cutter radius compensation off
+
+    ; go up
+    G53 G1 Z[#<_ini[TOOL_MEASUREMENT]Z>]
+
+    ; move to measurement position
+    G53 G0 X[#<_ini[TOOL_MEASUREMENT]X>] Y[#<_ini[TOOL_MEASUREMENT]Y>]
+
+    ; fast moving to switch
+    G53 G1 Z[#<_ini[TOOL_MEASUREMENT]FAST_Z>] F[#<_ini[TOOL_MEASUREMENT]TRAVEL_FEED>]
+
+    ; relative positioning
+    G54 G1 F[#<_ini[TOOL_MEASUREMENT]SLOW_FEED>] G91
+
+    ; fast probing
+    G38.2 Z[#<_ini[TOOL_MEASUREMENT]MIN_Z> - #<_ini[TOOL_MEASUREMENT]FAST_Z>] F[#<_ini[TOOL_MEASUREMENT]FAST_FEED>]
+
+    ; move slightly up
+    G0 Z[#<_ini[TOOL_MEASUREMENT]RETRACT>]
+
+    ; slow probing
+    G38.2 Z[#<_ini[TOOL_MEASUREMENT]RETRACT> * -1.25] F[#<_ini[TOOL_MEASUREMENT]SLOW_FEED>]
+
+    ; set offset in tool table
+    <touch_result> = #5063
+    G10 L1 P#<active_tool> Z#<touch_result>
+    (debug, <touch_result>)
+
+    ; absolute positioning
+    M90
+
+    ; go up
+    G53 G1 Z[#<_ini[TOOL_MEASUREMENT]Z>] F[#<_ini[TOOL_MEASUREMENT]TRAVEL_FEED>]
+
+    ; back to old position
+    G53 G0 X[#5181] Y[#5182]
+    G53 G1 Z[#5183] F[#<_ini[TOOL_MEASUREMENT]TRAVEL_FEED>]
+
+    ; restore modal state
+    M72
+o200 endif
+
+o<tool_measurement> endsub
+M3

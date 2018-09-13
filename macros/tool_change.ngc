@@ -1,0 +1,20 @@
+o<tool_change> sub
+
+; turn off spindle
+M5
+
+; turn off mist/coolant
+M9
+
+; go up
+G53 G0 Z[#<_ini[TOOL_CHANGE]Z>]
+
+; move to change position
+G53 G0 X[#<_ini[TOOL_CHANGE]X>] Y[#<_ini[TOOL_CHANGE]Y>]
+
+; using builtin behaviour
+M6
+
+return [3]
+
+o<tool_change> endsub [1]
